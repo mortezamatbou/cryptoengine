@@ -1,0 +1,36 @@
+#!/usr/local/bin/python
+
+import click
+import tabulate as tabulate
+from colorama import Style, Back, Fore, init as click_init
+
+
+click_init(autoreset=True)
+
+
+@click.version_option("1.0.0", prog_name="Client CLI")
+@click.group()
+def cli():
+    pass
+
+
+@click.command()
+def markets():
+    # get markets from database
+    click.echo(tabulate.tabulate([], headers=["coin_id", "name"], tablefmt='outline', stralign="left", numalign="center"))
+
+@click.command()
+@click.option('--userid', '-uid', type=int, prompt='user id', help='Enter user from db.users.id')
+@click.option('--amount', '-a', type=float, prompt='user id', help='Enter user from db.users.id')
+@click.option('--price', '-p', type=float, prompt='Pricecd ', help='Enter user from db.users.id')
+@click.option('--side', '-s', type=int, prompt='Order Side', help='BUY=1, SELL=2')
+def order(userid: int, interval: str, period: int, sleep: str):
+    click.echo(Back.RED + Fore.WHITE + "Pagination fucked up.")
+    print(Back.GREEN + Fore.WHITE + "Updated Successfully")
+    print(Back.RED + Fore.WHITE + "HI")
+
+cli.add_command(markets)
+cli.add_command(order)
+
+if __name__ == "__main__":
+    cli()

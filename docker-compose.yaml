@@ -1,0 +1,73 @@
+services:
+
+  engine:
+    build:
+      context: engine
+      target: builder
+    tty: true
+    container_name: ex-engine
+    volumes:
+      - ./engine/:/engine
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - exchange
+
+  cli:
+    build:
+      context: cli
+      target: builder
+    tty: true
+    container_name: ex-cli
+    volumes:
+      - ./cli/:/cli
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    networks:
+      - exchange
+
+  redis:
+    image: redis:7.4
+    container_name: ex-redis
+    ports:
+      - "${DB_REDIS_PORT:-6379}:6379"
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "${DB_REDIS_PASSWORD:-redis}"
+    volumes:
+      - ./volumes/data/redis:/data
+    networks:
+      - exchange
+
+  db:
+    image: timescale/timescaledb:2.18.1-pg17
+    container_name: ex-db
+    ports:
+      - "${DB_PORT_PG-5432}:5432"
+    environment:
+      - POSTGRES_USER=${DB_USERNAME:-user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-pass}
+      - POSTGRES_DB=${DB_DATABASE:-engine}
+      - PGUSER=${DB_USERNAME:-user}
+    volumes:
+      - "./volumes/data/postgresql:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DB_DATABASE:-engine}"]
+      start_period: 30s
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - exchange
+
+networks:
+  exchange: {}
