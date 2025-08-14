@@ -1,5 +1,7 @@
 FROM debian:latest AS builder
 
+WORKDIR /engine
+
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
     build-essential \
@@ -16,5 +18,3 @@ RUN apt-get update && apt-get upgrade -y && \
 ENV CXXFLAGS="-std=c++17"
 
 # RUN apt-get update && apt-get install -y libboost-all-dev
-
-# CMD ["bash"]
