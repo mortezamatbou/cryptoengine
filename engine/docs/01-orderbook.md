@@ -87,3 +87,38 @@ Each order in the book includes:
 2025-08-13 14:24:01 → User C3 places a buy order for 0.047 BTC at 114889.1  
 2025-08-13 14:24:05 → User C4 places a sell order for 0.061 BTC at 114578.32  
 2025-08-13 14:24:06 → User C5 places a buy order for 0.001 BTC at 114578.32
+```
+
+After validation, these orders are added to the order book and it is updated accordingly.
+
+These orders represent supply and demand in the market. Based on the sell orders from C1 and C4 at the same price, we now have:
+
+> `0.001 + 0.061 = 0.062 BTC` available for sale at `114578.32`
+
+---
+
+## 📐 Sorting Bids and Asks
+
+- **Asks** (sell orders) are sorted in ascending order → from lowest to highest price.
+- **Bids** (buy orders) are sorted in descending order → from highest to lowest price.
+
+
+## 🔍 Key Terms
+
+- `asks.top` → First row in asks (lowest sell price)
+
+- `bids.top` → First row in bids (highest buy price)
+
+- `asks.top.price` → Current lowest sell price
+
+- `bids.top.price` → Current highest buy price
+
+## ⚡ Matching Condition
+
+When the following condition is met:
+
+```text
+asks.top.price <= bids.top.price
+```
+
+The matching engine begins matching orders, and trades are executed between buyers and sellers.
